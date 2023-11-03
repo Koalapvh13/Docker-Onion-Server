@@ -1,0 +1,25 @@
+version: '3.7'
+services:
+  tor:
+    build: ./tor/
+    image: koalapvh13/torserver:latest
+    ports:
+      - 80:80
+    networks:
+      tornetwork:
+        ipv4_address: 10.5.0.5
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./src:/usr/share/nginx/html
+    networks:
+      tornetwork:
+        ipv4_address: 10.5.0.6
+
+networks:
+  tornetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/16

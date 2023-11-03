@@ -1,0 +1,16 @@
+FROM debian:latest
+
+RUN apt update && apt install tor nginx -y
+
+COPY ./torrc /etc/tor/
+
+EXPOSE 80
+
+WORKDIR /var/lib/tor/
+
+COPY ./hostname ./hidden_service/
+
+
+RUN chmod -R 700 /var/lib/tor/hidden_service/
+
+CMD ["tor"]

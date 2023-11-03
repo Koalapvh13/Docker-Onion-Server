@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Noughts and Crosses</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .game-container {
+            text-align: center;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            background-color: #eee;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: #ccc;
+        }
+
+        .play-again {
+            margin-top: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Noughts and Crosses</h1>
+    <div class="game-container">
+        <div class="board" id="board">
+            <div class="cell" onclick="makeMove(0)"></div>
+            <div class="cell" onclick="makeMove(1)"></div>
+            <div class="cell" onclick="makeMove(2)"></div>
+            <div class="cell" onclick="makeMove(3)"></div>
+            <div class="cell" onclick="makeMove(4)"></div>
+            <div class="cell" onclick="makeMove(5)"></div>
+            <div class="cell" onclick="makeMove(6)"></div>
+            <div class="cell" onclick="makeMove(7)"></div>
+            <div class="cell" onclick="makeMove(8)"></div>
+        </div>
+        <div id="status">Player X's Turn</div>
+        <div class="play-again" onclick="resetGame()">Play Again</div>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const status = document.getElementById('status');
+        const playAgainButton = document.querySelector('.play-again');
+        let currentPlayer = 'X';
+        let moves = 0;
+        let gameOver = false;
+
+        function checkWinner() {
+            const winningCombinations = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            for (const combo of winningCombinations) {
+                const [a, b, c] = combo;
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    cells[a].style.color = 'green';
+                    cells[b].style.color = 'green';
+                    cells[c].style.color = 'green';
+                    gameOver = true;
+                    return true;
+                }
+            }
+
+            if (moves === 9) {
+                status.textContent = 'It\'s a draw!';
+                gameOver = true;
+            }
+
+            return false;
+        }
+
+        function makeMove(index) {
+            if (!gameOver && !cells[index].textContent) {
+                cells[index].textContent = currentPlayer;
+                moves++;
+                if (checkWinner()) {
+                    status.textContent = `Player ${currentPlayer} wins!`;
+                    playAgainButton.style.display = 'block';
+                } else {
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    status.textContent = `Player ${currentPlayer}'s Turn`;
+                }
+            }
+        }
+
+        function resetGame() {
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.style.color = '';
+            });
+            currentPlayer = 'X';
+            moves = 0;
+            gameOver = false;
+            status.textContent = 'Player X\'s Turn';
+            playAgainButton.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
